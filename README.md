@@ -32,8 +32,9 @@ Traffic enters via a unified ingress abstraction layer, dynamically routing web 
                        v                                       v
                [ CoreDNS (Port 53) ]               [ MariaDB StatefulSet ]
                                                        (mariadb-headless:3306)
+```                                                       
 
-##📥 STEP-BY-STEP INSTALLATION & RUN GUIDE
+📥 STEP-BY-STEP INSTALLATION & RUN GUIDE
 
 Follow these exact steps to cleanly build and execute the microservices environment locally on your machine.
 📋 Prerequisites
