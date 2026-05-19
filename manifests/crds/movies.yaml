@@ -1,0 +1,19 @@
+apiVersion: example.com/v1
+kind: Movie
+metadata:
+  name: inception
+spec:
+  title: "Inception"
+  director: "Christopher Nolan"
+  year: 2010
+  rating: 8.8
+---
+apiVersion: example.com/v1
+kind: Movie
+metadata:
+  name: matrix
+spec:
+  title: "The Matrix"
+  director: "The Wachowskis"
+  year: 1999
+  rating: 8.7

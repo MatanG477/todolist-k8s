@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: todo-config
+data:
+  MYSQL_DB: todo
+  MYSQL_HOST: mariadb-headless
+  MYSQL_USER: root
+  USER: {{ .Values.env.user | default "GurfinkelMatan" }}
+  MYSQL_TABLE: todos
+

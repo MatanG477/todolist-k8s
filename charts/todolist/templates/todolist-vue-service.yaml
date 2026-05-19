@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: todolist-vue-service
+  labels:
+    app: todolist-vue
+spec:
+  selector:
+    app: todolist-vue
+  ports:
+    - name: http
+      port: {{ .Values.todolistVue.service.port }}
+      targetPort: 8080
+  type: ClusterIP

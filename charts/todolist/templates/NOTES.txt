@@ -1,0 +1,51 @@
+Thank you for installing the todolist chart!
+
+1) Install from OCI registry
+
+   # Example:
+   helm install todolist oci://ghcr.io/matang477/todolist
+     --set mysql.rootPassword=YOUR_PASSWORD \
+     --set ingress.host=todolist.local
+
+   # Required:
+   #   - mysql.rootPassword  (no default, must be provided)
+   # Optional:
+   #   - frontend.replicaCount
+   #   - todosApi.replicaCount
+   #   - todolistVue.replicaCount
+   #   - ingress.host
+
+2) What this chart deploys
+
+   - MariaDB StatefulSet + headless Service (mariadb, mariadb-headless)
+   - PersistentVolumeClaims for DB and backups
+   - CronJob for MariaDB backups
+   - Flask frontend Deployment + Service (frontend, frontend-service)
+   - todos-api Deployment + Service (todos-api, todos-api-service)
+   - Vue web UI Deployment + Service (todolist-vue, todolist-vue-service)
+   - ConfigMaps and Secrets for DB connection and user
+   - Ingress routing:
+       /       -> todolist-vue-service:{{ .Values.todolistVue.service.port }}
+       /webui  -> frontend-service:{{ .Values.frontend.service.port }}
+       /todos  -> todos-api-service:{{ .Values.todosApi.service.port }}
+   - NetworkPolicies securing frontend, Vue, API and MariaDB
+
+3) Accessing the application
+
+   After the Ingress controller is running and DNS/hosts points to {{ .Values.ingress.host }}:
+
+   - Vue web UI:   http://{{ .Values.ingress.host }}/
+   - Flask UI:     http://{{ .Values.ingress.host }}/webui
+   - REST API:     http://{{ .Values.ingress.host }}/todos
+
+4) Useful commands
+
+   # Check release
+   helm status {{ .Release.Name }}
+
+   # List main resources
+   kubectl get pods,svc,ingress,networkpolicy,pvc
+
+   # Uninstall
+   helm uninstall {{ .Release.Name }}
+

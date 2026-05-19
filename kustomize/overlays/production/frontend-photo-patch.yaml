@@ -1,0 +1,17 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend
+spec:
+  template:
+    spec:
+      volumes:
+        - name: matan-photo-vol
+          configMap:
+            name: matan-photo
+      containers:
+        - name: todolist
+          volumeMounts:
+            - name: matan-photo-vol
+              mountPath: /app/static/img/matan
+              readOnly: true

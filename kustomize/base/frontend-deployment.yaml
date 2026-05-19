@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend
+  labels:
+    app: frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: frontend
+  template:
+    metadata:
+      labels:
+        app: frontend
+    spec:
+      initContainers:
+      - name: wait-for-mysql
+        image: busybox:latest
+        command:
+        - /bin/sh
+        - -c
+        - |
+          echo "Waiting for MySQL on backend-service:3306..."
+          until nc -z backend-service 3306; do
+            echo "still waiting..."
+            sleep 2
+          done
+          echo "MySQL is up, starting frontend"
+      containers:
+      - name: todolist
+        image: ghcr.io/bennyro-mta/todolist:1.6
+        ports:
+        - containerPort: 5000
+        env:
+        - name: MYSQL_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: todo-config
+              key: MYSQL_HOST
+        - name: MYSQL_DB
+          valueFrom:
+            configMapKeyRef:
+              name: todo-config
+              key: MYSQL_DB
+        - name: MYSQL_USER
+          valueFrom:
+            configMapKeyRef:
+              name: todo-config
+              key: MYSQL_USER
+        - name: MYSQL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mysql-secret
+              key: MYSQL_ROOT_PASSWORD
+

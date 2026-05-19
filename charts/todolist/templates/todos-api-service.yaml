@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: todos-api-service
+  labels:
+    app: todos-api-service
+spec:
+  selector:
+    app: todos-api       # חייב להתאים ל-label של הפוד מה-Deployment
+  ports:
+  - name: http
+    port: {{ .Values.todosApi.service.port }}           # ה-port שה‑Ingress יפנה אליו
+    targetPort: 8080     # זהה ל-containerPort
+  type: ClusterIP

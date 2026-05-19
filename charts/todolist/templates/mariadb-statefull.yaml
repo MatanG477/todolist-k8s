@@ -1,0 +1,73 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: mariadb
+  labels:
+    app: mariadb
+spec:
+  serviceName: mariadb-headless        # must match the headless Service name
+  replicas: {{ .Values.mariadb.replicaCount }}
+  selector:
+    matchLabels:
+      app: mariadb
+  template:
+    metadata:
+      labels:
+        app: mariadb
+    spec:
+      initContainers:
+      - name: wait-for-volume
+        image: busybox:latest
+        command:
+        - /bin/sh
+        - -c
+        - |
+          echo "Checking data directory..."
+          if [ ! -d /var/lib/mysql ]; then
+            mkdir -p /var/lib/mysql
+          fi
+          echo "Volume ready"
+        volumeMounts:
+        - name: mariadb-data
+          mountPath: /var/lib/mysql
+      containers:
+      - name: mariadb
+        image: {{ .Values.mariadb.image }}
+        ports:
+        - containerPort: 3306
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mysql-secret
+              key: MYSQL_ROOT_PASSWORD
+        - name: MYSQL_DB
+          valueFrom:
+            configMapKeyRef:
+              name: todo-config
+              key: MYSQL_DB
+        - name: MYSQL_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: todo-config
+              key: MYSQL_HOST
+        - name: MYSQL_USER
+          valueFrom:
+            configMapKeyRef:
+              name: todo-config
+              key: MYSQL_USER
+        - name: MYSQL_ROOT_HOST
+          value: "%"
+        volumeMounts:
+        - name: mariadb-data
+          mountPath: /var/lib/mysql
+  volumeClaimTemplates:
+  - metadata:
+      name: mariadb-data
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      resources:
+        requests:
+          storage: {{ .Values.mariadb.storageSize }}
+      storageClassName: standard
+

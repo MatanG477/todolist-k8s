@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend
+spec:
+  template:
+    spec:
+      containers:
+      - name: todolist
+        image: ghcr.io/bennyro-mta/todolist:1.9
+        
+        # Liveness: מינימלי - רק "התהליך חי?"
+        livenessProbe:
+          httpGet:
+            path: /livez       # ✅ קיים + מושלם לקונבנציה
+            port: 5000
+          initialDelaySeconds: 15
+          periodSeconds: 20
+          timeoutSeconds: 2
+          failureThreshold: 3
+        
+        # Readiness: בודק DB + dependencies
+        readinessProbe:
+          httpGet:
+            path: /readyz      # ✅ בודק DB connection
+            port: 5000
+          initialDelaySeconds: 5
+          periodSeconds: 5
+          timeoutSeconds: 3
+          failureThreshold: 3
+

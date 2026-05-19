@@ -1,0 +1,32 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - ../stateful-hpa-probes
+  - netpol-db.yaml
+  - netpol-todos-api.yaml
+  - netpol-todolist-vue.yaml
+  - netpol-frontend.yaml
+  - todolist-ingress.yaml
+  - todolist-vue-deployment.yaml
+  - todolist-vue-service.yaml
+  - todolist-vue-image-configmap.yaml
+  - todos-api-deployment.yaml
+  - todos-api-service.yaml
+  - matan-photo-configmap.yaml
+
+patches:
+  - path: frontend-1-10-env-patch.yaml
+    target:
+      kind: Deployment
+      name: frontend
+  - path: frontend-photo-patch.yaml
+    target:
+      kind: Deployment
+      name: frontend
+  - path: todolist-vue-image-patch.yaml
+    target:
+     kind: Deployment
+     name: todolist-vue
+
+

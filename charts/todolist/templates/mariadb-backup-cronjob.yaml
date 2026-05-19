@@ -1,0 +1,34 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: mariadb-backup
+spec:
+  schedule: "0 0 * * *"     # every day at 00:00
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: OnFailure
+          containers:
+          - name: mariadb-backup
+            image: busybox:latest
+            command:
+            - /bin/sh
+            - -c
+            - |
+              DATE=$(date +"%Y%m%d-%H%M")
+              mkdir -p /backups/$DATE
+              cp -R /var/lib/mysql/* /backups/$DATE/
+            volumeMounts:
+            - name: mariadb-data
+              mountPath: /var/lib/mysql
+            - name: backups
+              mountPath: /backups
+          volumes:
+          - name: mariadb-data
+            persistentVolumeClaim:
+              # this must match the PVC used by your mariadb-0 pod
+              claimName: mariadb-data-mariadb-0
+          - name: backups
+            persistentVolumeClaim:
+              claimName: backups-pvc

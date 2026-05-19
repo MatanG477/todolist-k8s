@@ -1,0 +1,17 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: todolist-vue
+spec:
+  template:
+    spec:
+      volumes:
+        - name: title-image-vol
+          configMap:
+            name: todolist-vue-image
+      containers:
+        - name: todolist-vue
+          volumeMounts:
+            - name: title-image-vol
+              mountPath: /opt/images
+              readOnly: true

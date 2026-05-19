@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: todo-config
+data:
+  MYSQL_DB: todo
+  MYSQL_HOST: backend-service
+  MYSQL_USER: root
+  USER: Matan
+  MYSQL_TABLE: todos
+

@@ -1,0 +1,14 @@
+# Node/Vue
+node_modules/
+dist/
+.env
+
+# OS/IDEs
+.DS_Store
+.vscode/
+.idea/
+
+# Kubernetes/Helm
+*.log
+charts/*/charts/
+charts/*/values.schema.json

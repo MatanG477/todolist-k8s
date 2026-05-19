@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: todolist-vue
+  labels:
+    app: todolist-vue
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: todolist-vue
+  template:
+    metadata:
+      labels:
+        app: todolist-vue
+    spec:
+      containers:
+        - name: todolist-vue
+          image: ghcr.io/bennyro-mta/todolist-vue:1.2
+          ports:
+            - containerPort: 8080
+          env:
+            - name: API_BASE_URL
+              value: "http://todolist.local/todos"
+          volumeMounts:
+            - name: title-image-vol
+              mountPath: /opt/images
+              readOnly: true
+      volumes:
+        - name: title-image-vol
+          configMap:
+            name: todolist-vue-image
+            items:
+              - key: title-image.png
+                path: title-image.png
+

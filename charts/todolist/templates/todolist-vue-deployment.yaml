@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: todolist-vue
+  labels:
+    app: todolist-vue
+spec:
+  replicas: {{ .Values.todolistVue.replicaCount }}
+  selector:
+    matchLabels:
+      app: todolist-vue
+  template:
+    metadata:
+      labels:
+        app: todolist-vue
+    spec:
+      containers:
+        - name: todolist-vue
+          image: {{ .Values.todolistVue.image }}
+          ports:
+            - containerPort: 8080
+          env:
+            - name: API_BASE_URL
+              value: {{ .Values.todolistVue.apiBaseUrl | quote }}
+          volumeMounts:
+            - name: title-image-vol
+              mountPath: /opt/images
+              readOnly: true
+      volumes:
+        - name: title-image-vol
+          configMap:
+            name: todolist-vue-image
+            items:
+              - key: title-image.png
+                path: title-image.png
+

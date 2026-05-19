@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: todos-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: todos-api
+  template:
+    metadata:
+      labels:
+        app: todos-api
+    spec:
+      containers:
+      - name: todos-api
+        image: ghcr.io/bennyro-mta/todos-api:1.2
+        ports:
+        - containerPort: 8080
+        env:
+        - name: MYSQL_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: todo-config
+              key: MYSQL_HOST
+        - name: MYSQL_DB
+          valueFrom:
+            configMapKeyRef:
+              name: todo-config
+              key: MYSQL_DB
+        - name: MYSQL_USER
+          valueFrom:
+            configMapKeyRef:
+              name: todo-config
+              key: MYSQL_USER
+        - name: MYSQL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mysql-secret
+              key: MYSQL_ROOT_PASSWORD
+        - name: MYSQL_TABLE
+          valueFrom:
+            configMapKeyRef:
+              name: todo-config
+              key: MYSQL_TABLE
+
