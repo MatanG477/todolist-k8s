@@ -1,2 +1,4 @@
-templates/** linguist-language=YAML
+templates/** linguist-language=YAML linguist-detectable=true
+kustomize/** linguist-language=YAML linguist-detectable=true
+manifests/** linguist-language=YAML linguist-detectable=true
 *.tpl linguist-vendored
