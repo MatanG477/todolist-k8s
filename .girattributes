@@ -1,0 +1,2 @@
+templates/** linguist-language=YAML
+*.tpl linguist-vendored
